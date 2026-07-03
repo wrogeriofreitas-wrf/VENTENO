@@ -486,7 +486,7 @@ table{border-collapse:collapse;width:100%;}
       <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
         <div class="topbar-title">MASTERLOG VENTENO</div>
         <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
-          <span style="font-size:10px;color:var(--text-dim);white-space:nowrap;">Versão do Site: <b>26/06/2026 18:45</b></span>
+          <span style="font-size:10px;color:var(--text-dim);white-space:nowrap;">Versão do Site: <b>26/06/2026 20:52</b></span>
           <span style="font-size:10px;color:var(--text-dim);white-space:nowrap;">📊 Dados: <b id="ultima-atualizacao" style="color:var(--accent);">—</b></span>
         </div>
       </div>
@@ -911,7 +911,7 @@ function goTo(s){
 function popularFiltros(){
   var D=DADOS_NIE, todos=[];
   var ABR=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-  ['oke','iod','pod','ontime','agendamento'].forEach(function(k){ if(D.registros[k]) todos=todos.concat(D.registros[k]); });
+  ['oke','iod','pod','ontime','agendamento','nsc','nsd'].forEach(function(k){ if(D.registros[k]) todos=todos.concat(D.registros[k]); });
   var meses=new Set(), ufs=new Set(), filiais=new Set();
   todos.forEach(function(r){
     if(r.mes) meses.add(r.mes);
@@ -943,7 +943,7 @@ function popularFiltros(){
 function atualizarCascata(alterado){
   var D=DADOS_NIE, todos=[];
   var ABR=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-  ['oke','iod','pod','ontime','agendamento'].forEach(function(k){ if(D.registros[k]) todos=todos.concat(D.registros[k]); });
+  ['oke','iod','pod','ontime','agendamento','nsc','nsd'].forEach(function(k){ if(D.registros[k]) todos=todos.concat(D.registros[k]); });
 
   // Filtrar com os filtros ATUAIS (exceto o que acabou de ser alterado)
   function filtrarParcial(excluir){
