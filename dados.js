@@ -1,5 +1,5 @@
 ﻿var DADOS_NIE = {
-"ultima_atualizacao": "2026/07/06",
+"ultima_atualizacao": "2026/07/07",
 "registros": {
 "oke": [
 {"mes":"2026/01","nf":"261621","serie":"2","rdd":"2026/01/06","forn":"237466202","centro":"7323","status":"ENVIADO","pontos":1,"uf":"PB","filial":"Gabriel"},
