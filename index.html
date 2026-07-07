@@ -486,7 +486,7 @@ table{border-collapse:collapse;width:100%;}
       <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
         <div class="topbar-title">MASTERLOG VENTENO</div>
         <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
-          <span style="font-size:10px;color:var(--text-dim);white-space:nowrap;">Versão do Site: <b>26/06/2026 20:52</b></span>
+          <span style="font-size:10px;color:var(--text-dim);white-space:nowrap;">Versão do Site: <b>07/07/2026 10:38</b></span>
           <span style="font-size:10px;color:var(--text-dim);white-space:nowrap;">📊 Dados: <b id="ultima-atualizacao" style="color:var(--accent);">—</b></span>
         </div>
       </div>
@@ -1039,7 +1039,11 @@ function filRegs(ind){
     var fil=(x.filial||'').trim();
     return fil&&fil!=='?'&&fil.indexOf('Erro')<0&&F.filial.indexOf(fil)>=0;
   });
-  if(F.origem.length) r=r.filter(function(x){return F.origem.indexOf(x.serie||'')>=0;});
+  // Origem: se selecionou algo aplica; se desmarcou tudo = sem resultados
+  if(!MS.origem.todos){
+    if(F.origem.length) r=r.filter(function(x){return F.origem.indexOf(x.serie||'')>=0;});
+    else return []; // tudo desmarcado = nenhum resultado
+  }
   return r;
 }
 
@@ -1051,8 +1055,9 @@ function msToggle(k){
   // Fechar todos
   ['uf','filial','origem'].forEach(function(k2){ var d=el('ms-drop-'+k2); if(d) d.classList.remove('open'); });
   if(!isOpen){
-    // Re-popular opcoes se estiver vazio (segurança)
-    if(MS[k]&&!MS[k].opcoes.length&&k!=='origem') popularFiltros();
+    // Atualizar opcoes com base na tela ativa antes de abrir
+    if(k==='filial') atualizarOpcoesPorTela();
+    else if(!MS[k].opcoes.length&&k!=='origem') popularFiltros();
     // Posicionar com fixed
     var btn=el('ms-btn-'+k);
     if(btn){
@@ -1064,6 +1069,36 @@ function msToggle(k){
     drop.classList.add('open');
     msRenderList(k,'');
   }
+}
+
+// Atualizar opções de Responsável com base na tela ativa
+function atualizarOpcoesPorTela(){
+  var D=DADOS_NIE;
+  var tela=screenAtiva();
+  // Mapear tela para indicador
+  var mapa={oke:'oke',iod:'iod',pod:'pod',ontime:'ontime',reag:'agendamento',
+            nsc:'nsc',nsd:'nsd',qnc:'qnc',resumo:null};
+  var campo=mapa[tela];
+  var regs=[];
+  if(campo){
+    regs=(D.registros[campo]||[]).slice();
+    // Aplicar filtros de mês e uf já selecionados
+    if(F.mes) regs=regs.filter(function(x){return x.mes===F.mes;});
+    if(F.uf.length) regs=regs.filter(function(x){return F.uf.indexOf(x.uf||'')>=0;});
+  } else {
+    // Resumo: todos os indicadores
+    ['oke','iod','pod','ontime','agendamento','nsc','nsd'].forEach(function(k){
+      var r=(D.registros[k]||[]).slice();
+      if(F.mes) r=r.filter(function(x){return x.mes===F.mes;});
+      if(F.uf.length) r=r.filter(function(x){return F.uf.indexOf(x.uf||'')>=0;});
+      regs=regs.concat(r);
+    });
+  }
+  var filiais=new Set(regs.map(function(r){return (r.filial||'').trim();}));
+  MS.filial.opcoes=Array.from(filiais)
+    .filter(function(f){return f&&f!=='?'&&f.indexOf('Erro')<0;})
+    .sort()
+    .map(function(f){return{v:f,l:f};});
 }
 function msClose(k){ var d=el('ms-drop-'+k); if(d) d.classList.remove('open'); }
 function msRenderList(k,q){
