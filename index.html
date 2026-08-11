@@ -1017,7 +1017,9 @@ function buildFilter(aba,key,vals,labelFn){
     ST[aba].F[key]=[];
     el.querySelectorAll('.filter-btn:not(.all-btn)').forEach(b=>b.classList.remove('active'));
     all.classList.add('active');
-    ST[aba].ufAtiva=null; render(aba);
+    ST[aba].ufAtiva=null;
+    if(key==='mes') sincronizarMes(aba, []);
+    render(aba);
   };
   el.appendChild(all);
   vals.forEach(function(v){
@@ -1028,9 +1030,32 @@ function buildFilter(aba,key,vals,labelFn){
       if(idx>=0){f.splice(idx,1);btn.classList.remove('active');}
       else{f.push(v);btn.classList.add('active');}
       all.classList.toggle('active',f.length===0);
-      ST[aba].ufAtiva=null; render(aba);
+      ST[aba].ufAtiva=null;
+      // Sincronizar mês com todas as abas
+      if(key==='mes') sincronizarMes(aba, ST[aba].F.mes);
+      render(aba);
     };
     el.appendChild(btn);
+  });
+}
+
+function sincronizarMes(abaOrigem, meses){
+  var todasAbas=['oke','iod','pod','ontime','agend','nsc','nsd','qnc'];
+  todasAbas.forEach(function(aba){
+    if(aba===abaOrigem) return;
+    // Atualizar estado
+    ST[aba].F.mes = meses.slice();
+    ST[aba].ufAtiva = null;
+    // Atualizar visual dos botões de mês
+    var el=document.getElementById(aba+'-f-mes');
+    if(!el) return;
+    el.querySelectorAll('.filter-btn').forEach(function(btn){
+      if(btn.classList.contains('all-btn')){
+        btn.classList.toggle('active', meses.length===0);
+      } else {
+        btn.classList.toggle('active', meses.includes(btn.dataset.val));
+      }
+    });
   });
 }
 
@@ -1040,7 +1065,9 @@ function limpar(aba){
     b.classList.remove('active');
     if(b.classList.contains('all-btn')) b.classList.add('active');
   });
-  ST[aba].ufAtiva=null; render(aba);
+  ST[aba].ufAtiva=null;
+  sincronizarMes(aba, []);
+  render(aba);
 }
 
 function filtrar(aba){
