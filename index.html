@@ -1048,14 +1048,17 @@ function sincronizarMes(abaOrigem, meses){
     ST[aba].ufAtiva = null;
     // Atualizar visual dos botões de mês
     var el=document.getElementById(aba+'-f-mes');
-    if(!el) return;
-    el.querySelectorAll('.filter-btn').forEach(function(btn){
-      if(btn.classList.contains('all-btn')){
-        btn.classList.toggle('active', meses.length===0);
-      } else {
-        btn.classList.toggle('active', meses.includes(btn.dataset.val));
-      }
-    });
+    if(el){
+      el.querySelectorAll('.filter-btn').forEach(function(btn){
+        if(btn.classList.contains('all-btn')){
+          btn.classList.toggle('active', meses.length===0);
+        } else {
+          btn.classList.toggle('active', meses.includes(btn.dataset.val));
+        }
+      });
+    }
+    // Renderizar imediatamente para refletir o novo filtro
+    render(aba);
   });
 }
 
